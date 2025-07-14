@@ -1,0 +1,5 @@
+openai>=1.13
+requests
+pandas
+python-dotenv
+jinja2
