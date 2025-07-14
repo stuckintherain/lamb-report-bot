@@ -1,4 +1,6 @@
-import datetime as dt, pathlib, pandas as pd
+import datetime as dt
+import pathlib
+import pandas as pd
 from jinja2 import Template
 
 from fetchers import usda, mla, blnz
@@ -9,15 +11,18 @@ BASE = pathlib.Path(__file__).parent
 def main():
     today = dt.date.today().strftime("%d %b %Y")
 
+    # Fetch data from each region
     us = usda.fetch()
     au = mla.fetch()
     nz = blnz.fetch()
 
-    us_txt = summarise(f"Summarise latest U.S. lamb prices (table):\\n{us.head().to_markdown()}")
-    au_txt = summarise(f"Summarise latest AU ESTLI prices (table):\\n{au.head().to_markdown()}")
-    nz_txt = summarise(f"Summarise latest NZ slaughter figures (table):\\n{nz.to_markdown()}")
+    # Ask GPT to summarize each set of data
+    us_txt = summarise(f"Summarise latest U.S. lamb prices (table):\n{us.head().to_markdown()}")
+    au_txt = summarise(f"Summarise latest AU ESTLI prices (table):\n{au.head().to_markdown()}")
+    nz_txt = summarise(f"Summarise latest NZ slaughter figures (table):\n{nz.to_markdown()}")
     cross  = summarise("Given the AU & NZ trends above and a strong USD, what may happen to U.S. import lamb prices in the next month?")
 
+    # Load Markdown template and fill it in
     template = Template((BASE / "template.md.j2").read_text())
     markdown = template.render(
         date=today,
@@ -28,6 +33,7 @@ def main():
         cross_section=cross,
     )
 
+    # Write to final markdown file
     (BASE.parent / "weekly_report.md").write_text(markdown)
     print("✓ Report ready: weekly_report.md")
 
