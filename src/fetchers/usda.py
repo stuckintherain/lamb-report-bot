@@ -6,10 +6,11 @@ BASE = "https://marsapi.ams.usda.gov/services/v1.2/reports/XL555/details?lastDay
 HEADERS = {
     "User-Agent": (
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
-        "(KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36"
+        "(KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
     ),
-    "Accept": "application/json",
-    "Referer": "https://mpr.datamart.ams.usda.gov/"
+    "Accept": "application/json, text/plain, */*",
+    "Referer": "https://mpr.datamart.ams.usda.gov/",
+    "Origin": "https://mpr.datamart.ams.usda.gov",
 }
 
 def fetch() -> pd.DataFrame:
