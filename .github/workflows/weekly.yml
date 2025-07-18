@@ -2,22 +2,31 @@ name: Generate Weekly Lamb Report
 
 on:
   schedule:
-    - cron:  '0 23 * * 4'  # every Thursday at 11 PM UTC
-  workflow_dispatch: {}
+    - cron: '0 23 * * 5'       # every Friday at 23:00 UTC
+  workflow_dispatch: {}      # manual trigger
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
           python-version: '3.10'
-      - run: pip install -r requirements.txt
-      - run: python src/report_generator.py
+
+      - name: Install dependencies
+        run: pip install pandas requests python-dotenv openai
+
+      - name: Run report generator
+        run: python src/report_generator.py
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-      - uses: actions/upload-artifact@v4
+
+      - name: Upload report
+        uses: actions/upload-artifact@v4
         with:
           name: weekly_lamb_report
           path: weekly_report.md
