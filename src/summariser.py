@@ -1,17 +1,25 @@
-from openai import OpenAI
+# src/summariser.py
+import os
+from dotenv import load_dotenv
+from openai import OpenAI  # new 1.x client
 
-client = OpenAI()
+load_dotenv()
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-SYSTEM = "You are a concise professional lamb-market analyst. Always reference numbers in your answer."
+SYSTEM = "You are a concise, professional lamb‑market analyst."
 
 def summarise(prompt: str) -> str:
-    chat = client.chat.completions.create(
-        model="gpt-4o",
-        messages=[
-            {"role": "system", "content": SYSTEM},
-            {"role": "user",   "content": prompt}
-        ],
-        temperature=0.3,
-        max_tokens=300,
-    )
-    return chat.choices[0].message.content.strip()
+    try:
+        completion = client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": SYSTEM},
+                {"role": "user",   "content": prompt}
+            ],
+            temperature=0.3,
+            max_tokens=300,
+        )
+        return completion.choices[0].message.content.strip()
+    except Exception as e:
+        print(f"⚠️ OpenAI API error: {e}")
+        return "_[Summary unavailable]_"
