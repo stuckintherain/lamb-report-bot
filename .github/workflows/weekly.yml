@@ -3,7 +3,7 @@ name: Generate Weekly Lamb Report
 on:
   schedule:
     - cron: '0 23 * * 5'       # every Friday at 23:00 UTC
-  workflow_dispatch: {}      # manual trigger
+  workflow_dispatch: {}        # manual trigger
 
 jobs:
   build:
